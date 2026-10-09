@@ -1,0 +1,6 @@
+*
+!proxy/nginx/
+!proxy/anubis/nginx/
+!proxy/iocaine/nginx/
+!services/personal_website/deployment/nginx/
+!services/mail_server/deployment/nginx/

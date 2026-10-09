@@ -1,0 +1,56 @@
+include:
+  - ${PATH_TO_ROOT_DOCKER_PROJ:?}/shared_sckts.yaml
+
+services:
+  nginx:
+    container_name: nginx
+    extends:
+      file: ${PATH_TO_ROOT_DOCKER_PROJ:?}/shared_sckts.yaml
+      service: shared_sckts_user
+    profiles:
+      - ${DOCKER_DEFAULT_PROFILE:?}
+    build:
+      # note that dockerfile cannot access directories above this
+      context: ${PATH_TO_ROOT_DOCKER_PROJ:?}
+      dockerfile: ${PATH_FROM_ROOT_DOCKER_PROJ:?}/Dockerfile
+      args:
+        CONFIG_SRC_FILES: ${NGINX_CONFIG_SRC_FILES:?}
+    restart: unless-stopped
+    user: ${DOCKER_ROOT_USER:?}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # letsencrypt ssl certs
+      # SYNC: required paths inside container
+      - type: bind
+        source: /etc/letsencrypt/
+        target: /etc/letsencrypt/
+        # can't read-only this as we copy the cerbot renewal hook script into it
+      # ssl certs for self-signed certs (e.g. https catch-all block)
+      # SYNC: required paths inside container
+      - type: bind
+        source: /etc/nginx/ssl/
+        target: /etc/nginx/ssl/
+        read_only: true
+      # logs
+      # SYNC: log paths of each service/nginx site inside container
+      - type: bind
+        source: /var/log/nginx/
+        target: /var/log/nginx/
+        bind:
+          create_host_path: true
+    env_file:
+      # needed to render the `${}` or `$` vars in the nginx `*.templates` files (using `envsubst`)
+      # SYNC: paths! (i don't think there's a way to store a dynamic list in an env var)
+      - ../iocaine/.env
+      - ../../services/personal_website/.env
+      - ../../services/personal_website/deployment/anubis/.env
+      - ../../services/mail_server/.env
+      - ../../services/mail_server/deployment/anubis/.env
+    healthcheck:
+      test: ["CMD", "curl", "-I", "http://localhost/"]
+      interval: 1m
+      timeout: 3s
+      retries: 3
+      start_period: 5s

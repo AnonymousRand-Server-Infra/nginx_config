@@ -1,0 +1,6 @@
+# security
+.env
+
+# vim
+*.swp
+*.swo
