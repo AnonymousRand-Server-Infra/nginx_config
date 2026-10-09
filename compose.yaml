@@ -53,7 +53,10 @@ services:
       - ${ENVSUBST_ENV_FILE_7:-.empty.env}
       - ${ENVSUBST_ENV_FILE_8:-.empty.env}
     healthcheck:
-      test: ["CMD", "curl", "-I", "http://localhost/"]
+      # we use `nc` instead of `curl` here since`curl` isn't in the `alpine-slim` nginx image
+      # and `wget` is bad here since it returns nonzero on 404, but we're just testing connectivity
+      # also `localhost` doesn't work since ipv6
+      test: ["CMD", "nc", "-z", "127.0.0.1", "80"]
       interval: 1m
       timeout: 3s
       retries: 3
