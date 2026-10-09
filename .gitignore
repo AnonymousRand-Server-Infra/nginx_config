@@ -1,6 +1,9 @@
 # security
 .env
 
+# other variable things
+Dockerfile.dockerignore
+
 # vim
 *.swp
 *.swo

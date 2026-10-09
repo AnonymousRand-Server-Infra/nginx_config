@@ -42,12 +42,16 @@ services:
           create_host_path: true
     env_file:
       # needed to render the `${}` or `$` vars in the nginx `*.templates` files (using `envsubst`)
-      # SYNC: paths! (i don't think there's a way to store a dynamic list in an env var)
-      - ../iocaine/.env
-      - ../../services/personal_website/.env
-      - ../../services/personal_website/deployment/anubis/.env
-      - ../../services/mail_server/.env
-      - ../../services/mail_server/deployment/anubis/.env
+      # i don't think there's a way to store a dynamic list in an env var, hence this bullshit
+      # make sure this accommodates all the files you need, and keep an `.empty.env` as a fallback
+      - ${ENVSUBST_ENV_FILE_1:-.empty.env}
+      - ${ENVSUBST_ENV_FILE_2:-.empty.env}
+      - ${ENVSUBST_ENV_FILE_3:-.empty.env}
+      - ${ENVSUBST_ENV_FILE_4:-.empty.env}
+      - ${ENVSUBST_ENV_FILE_5:-.empty.env}
+      - ${ENVSUBST_ENV_FILE_6:-.empty.env}
+      - ${ENVSUBST_ENV_FILE_7:-.empty.env}
+      - ${ENVSUBST_ENV_FILE_8:-.empty.env}
     healthcheck:
       test: ["CMD", "curl", "-I", "http://localhost/"]
       interval: 1m

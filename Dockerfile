@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:alpine-slim
 
 # merge nginx configs from all services here
 # `COPY` doesn't work if `CONFIG_SRC_FILES` holds multiple space-separated files, so we instead
