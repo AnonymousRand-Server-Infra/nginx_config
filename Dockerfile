@@ -11,6 +11,3 @@ RUN --mount=type=bind,target=/tmp_bind/ \
     if [ -n "${CONFIG_SRC_FILES}" ]; then \
         cd /tmp_bind/ && cp -r ${CONFIG_SRC_FILES} /etc/nginx/; \
     fi
-
-COPY proxy/nginx/handle_certbot_renewal.sh /etc/letsencrypt/renewal-hooks/deploy/
-RUN chmod +x /etc/letsencrypt/renewal-hooks/deploy/handle_certbot_renewal.sh

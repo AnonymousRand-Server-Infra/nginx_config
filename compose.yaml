@@ -26,7 +26,7 @@ services:
       - type: bind
         source: /etc/letsencrypt/
         target: /etc/letsencrypt/
-        # can't read-only this as we copy the cerbot renewal hook script into it
+        read_only: true
       # ssl certs for self-signed certs (e.g. https catch-all block)
       # SYNC: required paths inside container
       - type: bind
