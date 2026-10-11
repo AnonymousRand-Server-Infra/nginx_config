@@ -5,7 +5,7 @@
 
 #!/usr/bin/env bash
 
-set -x
+set -ex
 
 # so that nginx container can still read ssl certs (while also not giving perms to ALL users)
 # SYNC: nginx group id! (currently 101)

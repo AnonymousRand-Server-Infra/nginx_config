@@ -1,20 +1,20 @@
 include:
-  - ${PATH_TO_ROOT_DOCKER_PROJ:?}/shared_sckts.yaml
+  - ${PATH_TO_ROOT_DOCKER_PROJ:?}/${PATH_FROM_ROOT_TO_UTILS:?}/shared_sckts.yaml
 
 services:
   nginx:
     container_name: nginx
     extends:
-      file: ${PATH_TO_ROOT_DOCKER_PROJ:?}/shared_sckts.yaml
+      file: ${PATH_TO_ROOT_DOCKER_PROJ:?}/${PATH_FROM_ROOT_TO_UTILS:?}/shared_sckts.yaml
       service: shared_sckts_user
     profiles:
       - ${DOCKER_DEFAULT_PROFILE:?}
     build:
       # note that dockerfile cannot access directories above this
       context: ${PATH_TO_ROOT_DOCKER_PROJ:?}
-      dockerfile: ${PATH_FROM_ROOT_DOCKER_PROJ:?}/Dockerfile
+      dockerfile: ${PATH_FROM_ROOT_TO_NGINX:?}/Dockerfile
       args:
-        CONFIG_SRC_FILES: ${NGINX_CONFIG_SRC_FILES:?}
+        NGINX_CONFIG_SRC_FILES: ${NGINX_CONFIG_SRC_FILES:?}
     restart: unless-stopped
     user: ${DOCKER_ROOT_USER:?}
     ports:
@@ -22,16 +22,22 @@ services:
       - "443:443"
     volumes:
       # letsencrypt ssl certs
-      # SYNC: required paths inside container
+      # SYNC: paths inside container required by nginx config
       - type: bind
         source: /etc/letsencrypt/
         target: /etc/letsencrypt/
         read_only: true
       # ssl certs for self-signed certs (e.g. https catch-all block)
-      # SYNC: required paths inside container
+      # SYNC: paths inside container required by nginx config
       - type: bind
         source: /etc/nginx/ssl/
         target: /etc/nginx/ssl/
+        read_only: true
+      # acme challenge path for e.g. certbot autorenewals from the host/another container
+      # SYNC: path inside container required by nginx config
+      - type: bind
+        source: /var/www/certbot/
+        target: ${NGINX_ACME_CHALLS_PATH:?}
         read_only: true
       # logs
       # SYNC: log paths of each service/nginx site inside container
@@ -41,7 +47,7 @@ services:
         bind:
           create_host_path: true
     env_file:
-      # needed to render the `${}` or `$` vars in the nginx `*.templates` files (using `envsubst`)
+      # for `envsubst`
       # i don't think there's a way to store a dynamic list in an env var, hence this bullshit
       # make sure this accommodates all the files you need, and keep an `.empty.env` as a fallback
       - ${ENVSUBST_ENV_FILE_1:-.empty.env}
@@ -53,11 +59,11 @@ services:
       - ${ENVSUBST_ENV_FILE_7:-.empty.env}
       - ${ENVSUBST_ENV_FILE_8:-.empty.env}
     healthcheck:
-      # we use `nc` instead of `curl` here since`curl` isn't in the `alpine-slim` nginx image
+      # we use `nc` instead of `curl` here since `curl` isn't in the `alpine-slim` nginx image
       # and `wget` is bad here since it returns nonzero on 404, but we're just testing connectivity
       # also `localhost` doesn't work since ipv6
       test: ["CMD", "nc", "-z", "127.0.0.1", "80"]
       interval: 1m
-      timeout: 3s
+      timeout: 5s
       retries: 3
       start_period: 5s

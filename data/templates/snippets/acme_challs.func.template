@@ -1,0 +1,3 @@
+location /.well-known/acme-challenge/ {
+    root ${NGINX_ACME_CHALLS_PATH};
+}

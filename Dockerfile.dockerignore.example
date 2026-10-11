@@ -3,4 +3,5 @@
 !proxy/anubis/nginx/
 !proxy/iocaine/nginx/
 !services/personal_website/deployment/nginx/
+!services/git_server/deployment/nginx/
 !services/mail_server/deployment/nginx/
