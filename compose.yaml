@@ -39,6 +39,8 @@ services:
         source: /var/www/certbot/
         target: ${NGINX_ACME_CHALLS_PATH:?}
         read_only: true
+        bind:
+          create_host_path: true
       # logs
       # SYNC: log paths of each service/nginx site inside container
       - type: bind
