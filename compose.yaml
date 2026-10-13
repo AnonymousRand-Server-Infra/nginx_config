@@ -65,7 +65,7 @@ services:
       # and `wget` is bad here since it returns nonzero on 404, but we're just testing connectivity
       # also `localhost` doesn't work since ipv6
       test: ["CMD", "nc", "-z", "127.0.0.1", "80"]
-      interval: 1m
+      interval: 30s
       timeout: 5s
       retries: 3
       start_period: 5s
