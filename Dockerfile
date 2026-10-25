@@ -1,6 +1,8 @@
 FROM nginx:alpine-slim
 
-# merge nginx configs from all services here
+##############################################################################
+# merge configs from services
+
 # `COPY` doesn't work if `CONFIG_SRC_FILES` holds multiple space-separated files, so we instead
 # make a temporary bind of the dockerfile's context to `/tmp_bind/` inside the container and `cp`
 # this does require us to mount a large context, but this service shouldn't be restarted much
