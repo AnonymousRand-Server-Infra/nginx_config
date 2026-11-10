@@ -1,7 +1,9 @@
+# SYNC: esp for new services!
 *
 !proxy/nginx/
 !proxy/anubis/nginx/
 !proxy/iocaine/nginx/
 !services/personal_website/deployment/nginx/
+!services/file_server/deployment/nginx/
 !services/git_server/deployment/nginx/
 !services/mail_server/deployment/nginx/

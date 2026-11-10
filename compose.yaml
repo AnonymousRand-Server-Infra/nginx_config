@@ -60,6 +60,8 @@ services:
       - ${ENVSUBST_ENV_FILE_6:-.empty.env}
       - ${ENVSUBST_ENV_FILE_7:-.empty.env}
       - ${ENVSUBST_ENV_FILE_8:-.empty.env}
+      - ${ENVSUBST_ENV_FILE_9:-.empty.env}
+      - ${ENVSUBST_ENV_FILE_10:-.empty.env}
     healthcheck:
       # we use `nc` instead of `curl` here since `curl` isn't in the `alpine-slim` nginx image
       # and `wget` is bad here since it returns nonzero on 404, but we're just testing connectivity
